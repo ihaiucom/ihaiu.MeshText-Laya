@@ -110,7 +110,7 @@ export default class TestShader
         // position2.y += 3;
         // mestText.tweenEndPos = position2;
         var fun = ()=>{
-            this.createText(batchMesh,  new Laya.Vector3(Math.random() * 3 + -3 , Math.random() * 3 + -4 , 0));
+            this.createText(batchMesh,  new Laya.Vector3(Math.random() * 8 + -4 , Math.random() * 3 + -4 , 0));
            
             // item.Text = this.strList[Random.range(0,this.strList.length)];
             // // mestText.transform.position = position;
@@ -120,7 +120,7 @@ export default class TestShader
             // Laya.timer.once(Random.range(100,200), this,fun);
         }
 
-        Laya.timer.once(Random.range(1000,2000), this, fun);
+        Laya.timer.once(Random.range(250,600), this, fun);
     }
 
 }
