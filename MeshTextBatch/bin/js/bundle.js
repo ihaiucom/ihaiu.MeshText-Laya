@@ -1394,8 +1394,8 @@
             reg("script/GameUI.ts", GameUI);
         }
     }
-    GameConfig.width = 640;
-    GameConfig.height = 1136;
+    GameConfig.width = 1334;
+    GameConfig.height = 750;
     GameConfig.scaleMode = "fixedwidth";
     GameConfig.screenMode = Laya.Stage.SCREEN_NONE;
     GameConfig.alignV = "top";
@@ -1412,7 +1412,7 @@
         constructor() {
             this.InitLaya();
             if (Laya.Browser.onWeiXin) {
-                Laya.URL.basePath = "http://10.10.10.188:8900/bin/";
+                Laya.URL.basePath = "http://192.168.1.10:8900/bin/";
             }
             new TestShader();
         }
