@@ -1,3 +1,6 @@
+import { MeshTextBatchTweenMaterial } from "./Material/MeshTextBatchTweenMaterial";
+import { MeshTextBatchTweenSeparateMaterial } from "./Material/MeshTextBatchTweenSeparateMaterial";
+
 export interface MeshTextAtlasData
 {
     meta: {size: {w: number, h: number}};
@@ -44,6 +47,36 @@ export default class MeshTextAtlas
         }
         return this._UnlitMaterial;
     }
+
+    
+    private _MeshTextBatchTweenMaterial:MeshTextBatchTweenMaterial;
+    get MeshTextBatchTweenMaterial():MeshTextBatchTweenMaterial
+    {
+        if(!this._MeshTextBatchTweenMaterial)
+        {
+            var m = new MeshTextBatchTweenMaterial();
+            m.renderMode = Laya.UnlitMaterial.RENDERMODE_TRANSPARENT;
+            m.albedoTexture = this.texture;
+            // m.cull = Laya.RenderState.CULL_NONE;
+            this._MeshTextBatchTweenMaterial = m;
+        }
+        return this._MeshTextBatchTweenMaterial;
+    }
+
+    private _MeshTextBatchTweenSeparateMaterial:MeshTextBatchTweenSeparateMaterial;
+    get MeshTextBatchTweenSeparateMaterial():MeshTextBatchTweenSeparateMaterial
+    {
+        if(!this._MeshTextBatchTweenMaterial)
+        {
+            var m = new MeshTextBatchTweenSeparateMaterial();
+            m.renderMode = Laya.UnlitMaterial.RENDERMODE_TRANSPARENT;
+            m.albedoTexture = this.texture;
+            // m.cull = Laya.RenderState.CULL_NONE;
+            this._MeshTextBatchTweenSeparateMaterial = m;
+        }
+        return this._MeshTextBatchTweenSeparateMaterial;
+    }
+    
 
 	private static LoadAsync(path: string, type?:string): Promise<any>
 	{

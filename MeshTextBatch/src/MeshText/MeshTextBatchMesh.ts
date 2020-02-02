@@ -30,20 +30,31 @@ export default class MeshTextBatchMesh
         this.maxTextNum = maxTextNum;
         this.stringMaxLength = stringMaxLength;
 
-        var onceTextVerticeCount = (onceTextLength << 2) * 5;
-        var verticeCount = (stringMaxLength << 2) * 5;
+        var onceTextVerticeCount = (onceTextLength << 2) * 7;
+        var verticeCount = (stringMaxLength << 2) * 7;
         var indicesCount = (stringMaxLength << 1) * 3;
 
-        var vertexDeclaration: VertexDeclaration = VertexMesh.getVertexDeclaration("POSITION,UV");
+        var vertexDeclaration: VertexDeclaration = VertexMesh.getVertexDeclaration("POSITION,UV,UV1");
         var verticesBuffer: Float32Array = new Float32Array(verticeCount);
         var indicesBuffer: Uint16Array = new Uint16Array(indicesCount);
         ToolMeshText.SetIndicesBuffer(indicesBuffer);
 
-        // for(var i = 0; i < verticeCount; i ++)
-        // {
-        //     verticesBuffer[i] = Math.random() * 2 * (Math.random() > 0.5 ? 1 : -1);
-        // }
+        // uv2.y
+        for(var i = 0; i < stringMaxLength; i ++)
+        {
+            for(var v = 0; v < 4; v ++)
+            {
+                var ii = i * 4 + v;
+                ii = ii * 7 + 6;
+                verticesBuffer[ii] = Math.random();
+            }
+        }
 
+
+        this.verticesBuffer = verticesBuffer;
+        this.indicesBuffer = indicesBuffer;
+        this.mesh = Laya.PrimitiveMesh._createMesh(vertexDeclaration, verticesBuffer, indicesBuffer);
+        
         for(var i = maxTextNum - 1; i >= 0; i --)
         {
             var verticeBeginIndex: number = i * onceTextVerticeCount;
@@ -51,14 +62,10 @@ export default class MeshTextBatchMesh
             var item = new MeshTextItem(this, i, verticeBeginIndex, verticeEndIndex);
             Laya.Pool.recover(this.itemPoolKey, item);
         }
-
-        this.verticesBuffer = verticesBuffer;
-        this.indicesBuffer = indicesBuffer;
-        this.mesh = Laya.PrimitiveMesh._createMesh(vertexDeclaration, verticesBuffer, indicesBuffer);
     }
 
     useItemList:MeshTextItem[] = [];
-    GetItem(text: string, position = new Laya.Vector3(0, 0, 0), atlaTypeKey?: any):MeshTextItem
+    GetItem(text: string, position = new Laya.Vector3(0, 0, 0), atlaTypeKey?: any, scale: number = 1.0):MeshTextItem
     {
         var item:MeshTextItem = Laya.Pool.getItem(this.itemPoolKey);
         if(item == null)
@@ -71,10 +78,19 @@ export default class MeshTextBatchMesh
         }
         item.atlaTypeKey = atlaTypeKey;
         item.position = position;
+        item.scale = scale;
         item.Text = text;
         this.useItemList.push(item);
         return item;
     } 
+
+    PlayItem(text: string, position = new Laya.Vector3(0, 0, 0), atlaTypeKey?: any, scale: number = 1.0, tweenSpeed:number = 1.0):MeshTextItem
+    {
+        var item:MeshTextItem = this.GetItem(text, position, atlaTypeKey, scale);
+        item.tweenSpeed = tweenSpeed;
+        item.StartTween();
+        return item;
+    }
 
     private RemoveUseFromList(item:MeshTextItem)
     {
