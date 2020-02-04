@@ -61,7 +61,7 @@ export default class TestShader
             {
                 str = "c";
             }
-            var num = Random.range(1,5);
+            var num = Random.range(1,4);
             for(var i = 0; i <= num; i ++)
             {
                 str += Random.rangeBoth(0,9).toString();

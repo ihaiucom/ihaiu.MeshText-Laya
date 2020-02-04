@@ -19,7 +19,7 @@ export default class MeshTextBatchMesh
 
     
     public atlas: MeshTextAtlas;
-    constructor(atlas: MeshTextAtlas, onceTextLength:number = 10, maxTextNum: number = 100)
+    constructor(atlas: MeshTextAtlas, onceTextLength:number = 5, maxTextNum: number = 50)
     {
         this.uid = MeshTextBatchMesh.UID ++;
         this.itemPoolKey = "MeshTextItem__" + this.uid;

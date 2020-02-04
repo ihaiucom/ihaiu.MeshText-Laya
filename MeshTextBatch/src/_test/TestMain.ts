@@ -1,6 +1,8 @@
 import TestShader from "./TestShader";
 import GameConfig from "../GameConfig";
 import TestShader2 from "./TestShader2";
+import TestShader3 from "./TestShader3";
+import TestShader5 from "./TestShader5";
 
  class TestMain 
 {
@@ -15,8 +17,10 @@ import TestShader2 from "./TestShader2";
 		}
 		
 		// 启动游戏
-		new TestShader();
+		// new TestShader();
 		// new TestShader2();
+		new TestShader3();
+		// new TestShader5();
 		
 		
 

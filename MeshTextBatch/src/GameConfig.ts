@@ -7,7 +7,7 @@ export default class GameConfig{
     static width:number=1334;
     static height:number=750;
     static scaleMode:string="fixedwidth";
-    static screenMode:string=Laya.Stage.SCREEN_NONE;
+    static screenMode:string="none";
     static alignV:string="top";
     static alignH:string="left";
     static startScene:any="test/TestScene.scene";

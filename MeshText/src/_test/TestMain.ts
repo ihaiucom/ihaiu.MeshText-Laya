@@ -15,8 +15,8 @@ import TestShader2 from "./TestShader2";
 		}
 		
 		// 启动游戏
-		new TestShader();
-		// new TestShader2();
+		// new TestShader();
+		new TestShader2();
 		
 		
 
