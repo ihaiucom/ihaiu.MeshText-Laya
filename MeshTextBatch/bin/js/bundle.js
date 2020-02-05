@@ -2810,7 +2810,7 @@
         }
         setTextNum(textManager, num = 100) {
             for (var i = 0; i < num; i++) {
-                this.createText(textManager, new Laya.Vector3(Math.random() * 100 + -4, Math.random() * 3 + -2, 0));
+                this.createText(textManager, new Laya.Vector3(Math.random() * 8 + -4, Math.random() * 3 + -2, 0));
             }
         }
     }
