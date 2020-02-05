@@ -1,8 +1,7 @@
 import TestShader from "./TestShader";
 import GameConfig from "../GameConfig";
-import TestShader2 from "./TestShader2";
-import TestShader3 from "./TestShader3";
-import TestShader5 from "./TestShader5";
+import TestText from "./TestText";
+import { TestScene } from "./TestSene";
 
  class TestMain 
 {
@@ -16,14 +15,17 @@ import TestShader5 from "./TestShader5";
 			Laya.URL.basePath = "http://192.168.1.10:8900/bin/";
 		}
 		
+
+		var text = new TestText();
+		text.InitAsync();
+		
 		// 启动游戏
 		// new TestShader();
 		// new TestShader2();
-		new TestShader3();
+		// new TestShader3();
+		// new TestShader4();
 		// new TestShader5();
 		
-		
-
 	}
 
 	

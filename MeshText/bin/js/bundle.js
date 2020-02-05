@@ -1,65 +1,6 @@
 (function () {
     'use strict';
 
-    var Scene = Laya.Scene;
-    var REG = Laya.ClassUtils.regClass;
-    var ui;
-    (function (ui) {
-        var test;
-        (function (test) {
-            class TestSceneUI extends Scene {
-                constructor() { super(); }
-                createChildren() {
-                    super.createChildren();
-                    this.loadScene("test/TestScene");
-                }
-            }
-            test.TestSceneUI = TestSceneUI;
-            REG("ui.test.TestSceneUI", TestSceneUI);
-        })(test = ui.test || (ui.test = {}));
-    })(ui || (ui = {}));
-
-    class GameUI extends ui.test.TestSceneUI {
-        constructor() {
-            super();
-            var scene = Laya.stage.addChild(new Laya.Scene3D());
-            var camera = (scene.addChild(new Laya.Camera(0, 0.1, 100)));
-            camera.transform.translate(new Laya.Vector3(0, 3, 3));
-            camera.transform.rotate(new Laya.Vector3(-30, 0, 0), true, false);
-            var directionLight = scene.addChild(new Laya.DirectionLight());
-            directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
-            directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, -1, 0));
-            var box = scene.addChild(new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(1, 1, 1)));
-            box.transform.rotate(new Laya.Vector3(0, 45, 0), false, false);
-            var material = new Laya.BlinnPhongMaterial();
-            Laya.Texture2D.load("res/layabox.png", Laya.Handler.create(null, function (tex) {
-                material.albedoTexture = tex;
-            }));
-            box.meshRenderer.material = material;
-        }
-    }
-
-    class GameConfig {
-        constructor() { }
-        static init() {
-            var reg = Laya.ClassUtils.regClass;
-            reg("script/GameUI.ts", GameUI);
-        }
-    }
-    GameConfig.width = 1334;
-    GameConfig.height = 750;
-    GameConfig.scaleMode = "fixedwidth";
-    GameConfig.screenMode = "none";
-    GameConfig.alignV = "top";
-    GameConfig.alignH = "left";
-    GameConfig.startScene = "test/TestScene.scene";
-    GameConfig.sceneRoot = "";
-    GameConfig.debug = false;
-    GameConfig.stat = true;
-    GameConfig.physicsDebug = false;
-    GameConfig.exportSceneToJson = true;
-    GameConfig.init();
-
     var Vector3 = Laya.Vector3;
     class TestScene extends Laya.Scene3D {
         static create() {
@@ -479,16 +420,12 @@
         MeshTextType["green"] = "green_";
     })(MeshTextType || (MeshTextType = {}));
 
-    var BitmapFont = Laya.BitmapFont;
-    var Text = Laya.Text;
-    var Handler = Laya.Handler;
-    class TestShader2 {
+    class TestShader {
         constructor() {
             this.strList = [];
-            this.fontName = "diyFont";
             this.scene = TestScene.create();
             Laya.stage.addChild(this.scene);
-            this.loadFont();
+            this.TestTextMesh();
         }
         async InitAsync() {
         }
@@ -504,7 +441,7 @@
             atlas.GenerateNumType(MeshTextType.green);
             atlas.AddToAllType("c");
             atlas.AddToAllType("d");
-            for (var j = 0; j <= 100; j++) {
+            for (var j = 0; j <= 30; j++) {
                 var str = "cd";
                 for (var i = 0; i <= 9; i++) {
                     str += Random.rangeBoth(0, 9).toString();
@@ -512,74 +449,102 @@
                 this.strList[j] = str;
             }
             for (var i = 0; i < 100; i++) {
-                this.createText2(atlas, isShowLine, new Laya.Vector3(Random.range(-5, 5), Random.range(-5, 5), -i * 0.2));
+                this.createText(atlas, isShowLine, new Laya.Vector3(Random.range(-5, 5), Random.range(-5, 5), 0));
             }
         }
-        createText2(atlas, isShowLine, position = new Laya.Vector3(0, 0, 0)) {
+        createText(atlas, isShowLine, position = new Laya.Vector3(0, 0, 0)) {
             var mestText = new MeshText();
-            mestText.Init(atlas, MeshTextType.white);
+            mestText.Init(atlas, MeshTextType.white, true);
             mestText.Text = "cd0123456789";
             window['mestText'] = mestText;
-            var textSprite = this.scene.addChild(new Laya.MeshSprite3D(mestText.mesh));
-            textSprite.transform.position = position;
-            textSprite.meshRenderer.sharedMaterial = atlas.UnlitMaterial;
+            var scale = Math.random() * 0.5 + 0.2;
+            mestText.transform.position = position;
+            mestText.transform.localScale = new Laya.Vector3(scale, scale, scale);
+            mestText._isStatic = true;
+            this.scene.addChild(mestText);
             if (isShowLine) {
                 var boxLineSprite3D = this.scene.addChild(new Laya.PixelLineSprite3D(100));
             }
+            var position2 = position.clone();
+            position2.y += 3;
+            mestText.tweenEndPos = position2;
             var fun = () => {
                 mestText.Text = this.strList[Random.range(0, this.strList.length)];
-                Laya.timer.once(Random.range(50, 100), this, fun);
-            };
-            Laya.timer.once(100, this, fun);
-        }
-        loadFont() {
-            var bitmapFont = new BitmapFont();
-            bitmapFont.loadFont("res/font/test.fnt", new Handler(this, this.onFontLoaded, [bitmapFont]));
-        }
-        onFontLoaded(bitmapFont) {
-            bitmapFont.setSpaceWidth(10);
-            Text.registerBitmapFont(this.fontName, bitmapFont);
-            for (var j = 0; j <= 100; j++) {
-                var str = "cd";
-                for (var i = 0; i <= 9; i++) {
-                    str += Random.rangeBoth(0, 9).toString();
-                }
-                this.strList[j] = str;
-            }
-            for (var i = 0; i < 100; i++) {
-                this.createText(this.fontName);
-            }
-            this.createText(this.fontName);
-        }
-        createText(font) {
-            var txt = new Text();
-            txt.width = 250;
-            txt.wordWrap = true;
-            txt.text = this.strList[Random.range(0, this.strList.length)];
-            if (Random.range(0, 10) > 5) {
-                txt.font = font;
-            }
-            txt.leading = 5;
-            txt.pos(Laya.stage.width * (Math.random() * 0.8 + 0.1), Laya.stage.height * (Math.random() * 0.8 + 0.1));
-            Laya.stage.addChild(txt);
-            var y = txt.y;
-            var fun = () => {
-                txt.text = this.strList[Random.range(0, this.strList.length)];
-                txt.y = y;
-                Laya.Tween.to(txt, { y: txt.y - 100 }, 1000, Laya.Ease.linearNone, null, 0, false);
+                mestText.transform.position = position;
+                mestText.tweenRate = 0;
+                Laya.Tween.to(mestText, { tweenRate: 1 }, 1000, Laya.Ease.linearNone, null, 0, false);
                 Laya.timer.once(Random.range(1000, 2000), this, fun);
             };
             Laya.timer.once(100, this, fun);
         }
     }
 
+    var Scene = Laya.Scene;
+    var REG = Laya.ClassUtils.regClass;
+    var ui;
+    (function (ui) {
+        var test;
+        (function (test) {
+            class TestSceneUI extends Scene {
+                constructor() { super(); }
+                createChildren() {
+                    super.createChildren();
+                    this.loadScene("test/TestScene");
+                }
+            }
+            test.TestSceneUI = TestSceneUI;
+            REG("ui.test.TestSceneUI", TestSceneUI);
+        })(test = ui.test || (ui.test = {}));
+    })(ui || (ui = {}));
+
+    class GameUI extends ui.test.TestSceneUI {
+        constructor() {
+            super();
+            var scene = Laya.stage.addChild(new Laya.Scene3D());
+            var camera = (scene.addChild(new Laya.Camera(0, 0.1, 100)));
+            camera.transform.translate(new Laya.Vector3(0, 3, 3));
+            camera.transform.rotate(new Laya.Vector3(-30, 0, 0), true, false);
+            var directionLight = scene.addChild(new Laya.DirectionLight());
+            directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
+            directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, -1, 0));
+            var box = scene.addChild(new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(1, 1, 1)));
+            box.transform.rotate(new Laya.Vector3(0, 45, 0), false, false);
+            var material = new Laya.BlinnPhongMaterial();
+            Laya.Texture2D.load("res/layabox.png", Laya.Handler.create(null, function (tex) {
+                material.albedoTexture = tex;
+            }));
+            box.meshRenderer.material = material;
+        }
+    }
+
+    class GameConfig {
+        constructor() { }
+        static init() {
+            var reg = Laya.ClassUtils.regClass;
+            reg("script/GameUI.ts", GameUI);
+        }
+    }
+    GameConfig.width = 1334;
+    GameConfig.height = 750;
+    GameConfig.scaleMode = "fixedwidth";
+    GameConfig.screenMode = "none";
+    GameConfig.alignV = "top";
+    GameConfig.alignH = "left";
+    GameConfig.startScene = "test/TestScene.scene";
+    GameConfig.sceneRoot = "";
+    GameConfig.debug = false;
+    GameConfig.stat = true;
+    GameConfig.physicsDebug = false;
+    GameConfig.exportSceneToJson = true;
+    GameConfig.init();
+
     class TestMain {
         constructor() {
             this.InitLaya();
             if (Laya.Browser.onWeiXin) {
-                Laya.URL.basePath = "http://10.10.10.188:8900/bin/";
+                Laya.URL.basePath = "http://192.168.1.10:8900/bin/";
             }
-            new TestShader2();
+            new TestShader();
         }
         InitLaya() {
             if (window["Laya3D"])

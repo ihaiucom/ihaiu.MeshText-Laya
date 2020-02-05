@@ -11,6 +11,7 @@ export default class WarTextureTextItem extends Laya.Sprite
     public atlaTypeKey: any;
     private _text: string = "";
     private spriteList: Laya.Sprite[] = [];
+    public __scale = 1;
     constructor(bitmapText: WarTextureText, index?:number)
     {
         super();
@@ -26,15 +27,16 @@ export default class WarTextureTextItem extends Laya.Sprite
 
     public set Text(value: string)
     {
+        if(this._text == value)
+        {
+            return;
+        }
+
         if(value === undefined || value === null)
         {
             value = "";
         }
 
-        if(this._text == value)
-        {
-            return;
-        }
 
         for(var sprite of this.spriteList)
         {
@@ -43,16 +45,18 @@ export default class WarTextureTextItem extends Laya.Sprite
         }
         this.spriteList.length = 0;
 
-        var x = 0;
+        var x = -value.length * 25;
         for(var i = 0, len = value.length; i < len; i ++)
         {
             var sprite = this.bitmapText.textStyleMap.GetChartSprite(value[i], this.atlaTypeKey);
+            // sprite.scale(this.__scale, this.__scale);
             sprite.x = x;
             x += sprite.width;
+            // x += sprite.width * this.__scale;
             this.addChild(sprite);
             this.spriteList.push(sprite);
         }
-        this.width = x;
+        // this.width = x;
         this.pivotX = 0.5;
         this.pivotY = 0.5;
     }
@@ -79,7 +83,7 @@ export default class WarTextureTextItem extends Laya.Sprite
 
         Tween.to(this, { scaleX: 1.5, scaleY: 1.5 }, 144, Ease.linearNone, null, 0, false);
         Tween.to(this, { scaleX: 0.8, scaleY: 0.8 }, 144, Ease.linearNone, null, 144, false);
-        Tween.to(this, { y: this.startY - 80,alpha: 0.0 }, 400, Ease.linearNone, Laya.Handler.create(this, this.RecoverPool), 448, false);
+        Tween.to(this, { y: this.startY - 80,alpha: 0.0 }, 400, Ease.linearNone, Laya.Handler.create(this, this.OnTweenEnd), 448, false);
     
     }
 
@@ -100,6 +104,22 @@ export default class WarTextureTextItem extends Laya.Sprite
         }
     }
 
+    Clear()
+    {
+        Tween.clearAll(this);
+    }
+
+    OnTweenEnd()
+    {
+        Tween.clearAll(this);
+        if(this.bitmapText.debugItemLoop)
+        {
+            this.pos(this.position.x, this.position.y);
+            this.StartTween();
+            return;
+        }
+        this.RecoverPool();
+    }
 
     public RecoverPool()
     {

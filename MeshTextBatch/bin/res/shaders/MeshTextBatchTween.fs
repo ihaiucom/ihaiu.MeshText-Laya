@@ -10,6 +10,7 @@ precision highp float;
 #endif
 
 uniform vec4 u_AlbedoColor;
+varying float v_Alpha;
 
 
 #ifdef ALPHATEST
@@ -35,6 +36,7 @@ void main()
 	#if defined(COLOR)&&defined(ENABLEVERTEXCOLOR)
 		color *= v_Color;
 	#endif
+	color.a *= v_Alpha;
 
 	
 	#ifdef ALPHATEST

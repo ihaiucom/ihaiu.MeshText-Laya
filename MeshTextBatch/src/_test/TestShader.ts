@@ -41,7 +41,7 @@ export default class TestShader
         await MeshTextLib.LoadDefalutAsync();
 
         
-        var batchMesh:MeshTextBatchMesh = MeshTextLib.defaultMeshTextBatchMesh
+        var batchMesh:MeshTextBatchMesh = MeshTextLib.defaultText
         batchMesh.StartUpdate();
         window['batchMesh'] = batchMesh;
         this.scene.addChild(MeshTextLib.defaultMeshTextBatchSprite);
@@ -83,7 +83,7 @@ export default class TestShader
         // ToolRotation.Start(textSprite, new Laya.Vector3(0, 1, 0));
     }
 
-    atlasKeyTypeList = [MeshTextType.white, MeshTextType.red, MeshTextType.green];
+    atlasKeyTypeList = [MeshTextType.White, MeshTextType.Red, MeshTextType.Green];
     strList = [];
     createText(batchMesh:MeshTextBatchMesh,  position = new Laya.Vector3(0, 0, 0))
     {

@@ -11,6 +11,7 @@ export default class WarBitmapTextItem
     public atlaTypeKey: any;
     public scale: number = 1;
     private _text: string = "";
+    private _text2: string = "";
     constructor(bitmapText: WarBitmapText, index?:number)
     {
         this.bitmapText = bitmapText;
@@ -18,10 +19,11 @@ export default class WarBitmapTextItem
 
         var tf = new Laya.Text();
         tf.font = bitmapText.fontName;
+        tf.align = "center";
         tf.width = 250;
         tf.height = 50;
-        tf.pivotX = 0.5;
-        tf.pivotY = 0.5;
+        tf.pivotX = 0.5 * tf.width;
+        tf.pivotY = 0.5 * tf.height;
         this.textTF = tf;
     }
 
@@ -32,21 +34,30 @@ export default class WarBitmapTextItem
 
     public set Text(value: string)
     {
-        if(value === undefined || value === null)
-        {
-            value = "";
-        }
-
-        if(this.bitmapText.textStyleMap)
-        {
-            value == this.bitmapText.textStyleMap.GetCharts(value, this.atlaTypeKey);
-        }
+        
         if(this._text == value)
         {
             return;
         }
 
-        this.textTF.text = value;
+        if(value === undefined || value === null)
+        {
+            value = "";
+        }
+        var str = value;
+        if(this.bitmapText.textStyleMap)
+        {
+            str = this.bitmapText.textStyleMap.GetCharts(value, this.atlaTypeKey);
+        }
+        if(this._text2 == str)
+        {
+            return;
+        }
+        this._text = value;
+        this._text2 = str;
+
+        this.textTF.text = str;
+        window['tf'] = this.textTF;
 
     }
 
@@ -73,7 +84,7 @@ export default class WarBitmapTextItem
 
         Tween.to(textTF, { scaleX: 1.5, scaleY: 1.5 }, 144, Ease.linearNone, null, 0, false);
         Tween.to(textTF, { scaleX: 0.8, scaleY: 0.8 }, 144, Ease.linearNone, null, 144, false);
-        Tween.to(textTF, { y: this.startY - 80,alpha: 0.0 }, 400, Ease.linearNone, Laya.Handler.create(this, this.RecoverPool), 448, false);
+        Tween.to(textTF, { y: this.startY - 80,alpha: 0.0 }, 400, Ease.linearNone, Laya.Handler.create(this, this.OnTweenEnd), 448, false);
     
     }
 
@@ -94,6 +105,22 @@ export default class WarBitmapTextItem
         }
     }
 
+    Clear()
+    {
+        Tween.clearAll(this.textTF);
+    }
+
+    OnTweenEnd()
+    {
+        Tween.clearAll(this.textTF);
+        if(this.bitmapText.debugItemLoop)
+        {
+            this.textTF.pos(this.position.x, this.position.y);
+            this.StartTween();
+            return;
+        }
+        this.RecoverPool();
+    }
 
     public RecoverPool()
     {

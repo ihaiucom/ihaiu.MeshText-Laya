@@ -23,7 +23,8 @@ export default class MeshTextAtlas
     texture: Laya.Texture2D;
     atlasData: MeshTextAtlasData;
     private typeMap: Map<any, Map<string, MeshTextAtlasFrameData>> = new Map<any, Map<string, MeshTextAtlasFrameData>>();
-
+    typeScaleMap:Map<any, number> = new Map<any, number>();
+    
     get textureWidth()
     {
         return this.atlasData.meta.size.w;
@@ -173,7 +174,7 @@ export default class MeshTextAtlas
             } 
             else
             {
-                console.warn("文字图集里没找到字符:" + i);
+                console.warn("文字图集里没找到字符:" + i + ", type=" + typeKey + ", frameName="+ frameName);
                 continue;
             }
         }

@@ -24,7 +24,7 @@ export default class TextureTextAtlas
     texture: Laya.Texture;
     atlasData: TextureTextAtlasData;
     private typeMap: Map<any, Map<string, TextureTextAtlasFrameData>> = new Map<any, Map<string, TextureTextAtlasFrameData>>();
-
+    typeScaleMap:Map<any, number> = new Map<any, number>();
     get textureWidth()
     {
         return this.atlasData.meta.size.w;

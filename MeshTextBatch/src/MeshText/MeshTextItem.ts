@@ -42,10 +42,10 @@ export default class MeshTextItem
         {
             value = "";
         }
-        if(this._text == value)
-        {
-            return;
-        }
+        // if(this._text == value)
+        // {
+        //     return;
+        // }
 
         this.textLength = value.length;
         this._text = value;
@@ -94,27 +94,27 @@ export default class MeshTextItem
     }
 
     public tweenSpeed: number = 1;
-    private speedRandom = Math.random() * 0.5 + 0.7;
+    private speedRandom = Math.random() * 0.2 + 0.9;
     private tweenValue = 0;
     public UpdateTween(delta: number)
     {
-        this.tweenRate += delta   * this.tweenSpeed;
+        this.tweenRate += delta   * this.tweenSpeed * this.speedRandom;
         // this.tweenValue = Mathf.Lerp(this.tweenValue, 1.0, this.tweenRate);
         // this.tweenValue = Mathf.Lerp(0, 1.0, this.tweenRate);
-        this.tweenValue = Mathf.Lerp(this.tweenValue * 0.25, 1.0, this.tweenRate);
+        // this.tweenValue = Mathf.Lerp(this.tweenValue * 0.25, 1.0, this.tweenRate);
 
         ToolMeshText.SetVerticesSubBufferTweenRate(
             this.verticesBuffer, 
             this.verticeBeginIndex,
-            this.tweenValue,
+            this.tweenRate,
             0,
             this.textLength
         );
         this.meshTextBatchMesh.isReshedMesh = true;
 
-        if(this.tweenValue >= 1)
+        if(this.tweenRate >= 1)
         {
-            this.RecoverPool();
+            this.OnTweenEnd();
         }
     }
 
@@ -163,6 +163,16 @@ export default class MeshTextItem
     //         this.RecoverPool();
     //     }
     // }
+
+    OnTweenEnd()
+    {
+        if(this.meshTextBatchMesh.debugItemLoop)
+        {
+            this.StartTween();
+            return;
+        }
+        this.RecoverPool();
+    }
 
     public RecoverPool()
     {

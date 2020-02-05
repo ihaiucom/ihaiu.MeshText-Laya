@@ -7,10 +7,12 @@ export interface MeshTextAtlasData
 
 export interface MeshTextAtlasFrameData
 {
-    frameUV: {xMin:number, yMin:number, xMax: number, yMax:number, r: number};
+    frameUV: {xMin:number, yMin:number, xMax: number, yMax:number, w: number, h: number, r: number};
     frame: {x:number, y:number, w: number, h:number};
     spriteSourceSize: {x:number, y:number, w: number, h:number};
     sourceSize: {w: number, h:number};
+    materail: Laya.UnlitMaterial;
+    poolSignMaterial:string;
 }
 
 
@@ -84,6 +86,8 @@ export default class WarMaterialTextAtlas
 
     constructor(texture: Laya.Texture2D, atlasData: MeshTextAtlasData)
     {
+        texture.wrapModeU = Laya.Texture2D.WARPMODE_CLAMP;
+        texture.wrapModeV = Laya.Texture2D.WARPMODE_CLAMP;
         this.uid = WarMaterialTextAtlas.UID ++;
         this.texture = texture;
         this.atlasData = atlasData;
@@ -99,14 +103,37 @@ export default class WarMaterialTextAtlas
         for(var frameKey in atlasData.frames)
         {
             var frame = atlasData.frames[frameKey];
-            frame.frameUV = 
+            var uv = frame.frameUV = 
             {
                 xMin: frame.frame.x / textureWidth,
                 yMin: frame.frame.y / textureHeight,
                 xMax: (frame.frame.x + frame.frame.w) / textureWidth,
                 yMax: (frame.frame.y + frame.frame.h) / textureHeight,
+                w: frame.frame.w / textureWidth,
+                h: frame.frame.h / textureHeight,
                 r:frame.frame.w / frame.frame.h
             };
+            // var uv = frame.frameUV = 
+            // {
+            //     xMin: frame.spriteSourceSize.x / textureWidth,
+            //     yMin: frame.spriteSourceSize.y / textureHeight,
+            //     xMax: (frame.frame.x + frame.frame.w) / textureWidth,
+            //     yMax: (frame.frame.y + frame.frame.h) / textureHeight,
+            //     w: frame.spriteSourceSize.w / textureWidth,
+            //     h: frame.spriteSourceSize.h / textureHeight,
+            //     r:frame.frame.w / frame.frame.h
+            // };
+            frame.poolSignMaterial = "WarMaterialTextAtlas_" + this.uid + "_" + frameKey;
+            var material = frame.materail = new Laya.UnlitMaterial();
+            material.albedoTexture = this.texture;
+            material.renderMode = Laya.UnlitMaterial.RENDERMODE_TRANSPARENT;
+            material.tilingOffset = new Laya.Vector4(
+                uv.w,
+                uv.h,
+                uv.xMin,
+                uv.yMin
+            );
+
 
         }
     }
@@ -216,6 +243,49 @@ export default class WarMaterialTextAtlas
         return frame;
 
     }
+
+    
+    InitAllChartSpritePool(maxNum: number = 100)
+    {
+        var atlasData = this.atlasData;
+
+        for(var frameKey in atlasData.frames)
+        {
+            var frame = atlasData.frames[frameKey];
+            for(var i = 0; i < maxNum; i ++)
+            {
+                var sprite = this.CreateChartSprite(frame);
+                Laya.Pool.recover(frame.poolSignMaterial, sprite);
+            }
+        }
+    }
+
+    
+    spriteMesh = Laya.PrimitiveMesh.createQuad(1, 1);
+    CreateChartSprite(frame: MeshTextAtlasFrameData):Laya.MeshSprite3D
+    {
+        var sprite = new Laya.MeshSprite3D(this.spriteMesh);
+        sprite.meshRenderer.sharedMaterial = frame.materail;
+        sprite.name = frame.poolSignMaterial;
+        return sprite;
+    }
+
+    GetChartSprite(chart: string, typeKey?:any): Laya.MeshSprite3D
+    {
+        var frame = this.GetFrame(chart, typeKey);
+        var sprite = Laya.Pool.getItem(frame.poolSignMaterial);
+        if(!sprite)
+        {
+            sprite = this.CreateChartSprite(frame);
+        }
+        return sprite;
+    }
+
+    RecoverChartSprite(sprite: Laya.MeshSprite3D)
+    {
+        Laya.Pool.recover(sprite.name, sprite);
+    }
+    
 
 
 }

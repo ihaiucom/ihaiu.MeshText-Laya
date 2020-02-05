@@ -32,6 +32,7 @@ uniform vec4 u_TweenPositionEnd;
 // 主贴图UV坐标
 varying vec2 v_Texcoord0;
 varying vec4 v_Color;
+varying float v_Alpha;
 
 float lerp(float a, float b, float w) 
 {
@@ -72,6 +73,7 @@ void main()
 	#if defined(COLOR)&&defined(ENABLEVERTEXCOLOR)
 		v_Color = a_Color;
 	#endif
+	v_Alpha = 1.0;
 
 	gl_Position=remapGLPositionZ(gl_Position);
 }

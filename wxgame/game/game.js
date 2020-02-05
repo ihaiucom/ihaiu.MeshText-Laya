@@ -1,5 +1,5 @@
 
-
+window.Parser = require("./js/dom_parser");
 require('js/bundle.js');
 
 Laya.MiniFileMgr.deleteAll();

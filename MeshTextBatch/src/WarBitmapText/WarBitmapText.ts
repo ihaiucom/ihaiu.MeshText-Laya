@@ -6,30 +6,8 @@ import { TextStyleType } from "./TextStyleType";
 import WarBitmapTextItem from "./WarBitmapTextItem";
 export default class WarBitmapText extends Laya.Sprite
 {
-    static default: WarBitmapText;
-    static async LoadDefaultAsync(): Promise<WarBitmapText>
-    {
-        this.default = new WarBitmapText();
-        var style = new TextStyleMap();
-        this.default.textStyleMap = style;
-        style.GenerateNumType("012345679", TextStyleType.White);
-        style.GenerateNumType("qwertyuiop", TextStyleType.Red);
-        style.GenerateNumType("asdfghjkl;", TextStyleType.Green);
-        style.GenerateNumType("zxcvbnm,./", TextStyleType.YelloBig);
-        style.GenerateNumType("零一二三四五六七八九", TextStyleType.WhiteBig);
-        style.AddToAllType("d", "闪");
-        style.AddToAllType("c", "暴");
-        style.AddToType("c", "爆", TextStyleType.Red);
-
-        return new Promise<WarBitmapText>((resolve)=>
-        {
-            this.default.LoadFont("res/font/WarFont-export.fnt", ()=>
-            {
-                this.default.InitItemPool();
-                resolve(this.default);
-            });
-         });
-    }
+   
+    debugItemLoop: boolean = false;
 
     private static UID = 0;
     uid: number = 0;
@@ -71,17 +49,100 @@ export default class WarBitmapText extends Laya.Sprite
         }
     }
     
+    textItemCache: Map<any, Map<string, WarBitmapTextItem[]>> = new Map<any, Map<string, WarBitmapTextItem[]>>();
+
+    GetItemCacheByType(text: string, atlaTypeKey: any):WarBitmapTextItem[]
+    {
+        var typeMap: Map<string, WarBitmapTextItem[]>;
+        if(this.textItemCache.has(atlaTypeKey))
+        {
+            typeMap = this.textItemCache.get(atlaTypeKey);
+        }
+        else
+        {
+            typeMap = new Map<string, WarBitmapTextItem[]>();
+            this.textItemCache.set(atlaTypeKey, typeMap);
+        }
+
+        if(typeMap.has(text))
+        {
+            return typeMap.get(text);
+        }
+        else
+        {
+            var list = [];
+            typeMap.set(text, list);
+            return list;
+        }
+    }
+
+    RecoverItemCache(item:WarBitmapTextItem)
+    {
+        var list = this.GetItemCacheByType(item.Text, item.atlaTypeKey);
+        list.push(item);
+    }
+
+    
+    RemoveFromItemCache(item:WarBitmapTextItem)
+    {
+        if(!item.atlaTypeKey)
+        {
+            return;
+        }
+        var list = this.GetItemCacheByType(item.Text, item.atlaTypeKey);
+        var i = list.indexOf(item);
+        if(i != -1)
+        {
+            list.splice(i, 1);
+        }
+    }
+
+    GetItemCache(text: string, atlaTypeKey: any):WarBitmapTextItem
+    {
+        var list = this.GetItemCacheByType(text, atlaTypeKey);
+        if(list.length > 0)
+        {
+            var item = list.shift();
+            var pool = Laya.Pool.getPoolBySign(this.itemPoolKey);
+            var i = pool.indexOf(item);
+            if(i != -1)
+            {
+                pool.splice(i, 1);
+            }
+            return item;
+        }
+        return null;
+    }
+
     useItemList:WarBitmapTextItem[] = [];
     GetItem(text: string, position = new Laya.Vector3(0, 0, 0), atlaTypeKey?: any, scale: number = 1.0):WarBitmapTextItem
     {
-        var item:WarBitmapTextItem = Laya.Pool.getItem(this.itemPoolKey);
+        var item:WarBitmapTextItem = this.GetItemCache(text, atlaTypeKey);
+        if(item == null)
+        {
+            item = Laya.Pool.getItem(this.itemPoolKey);
+            if(item)
+            {
+                this.RemoveFromItemCache(item);
+            }
+        }
+
+
         if(item == null)
         {
             if(this.useItemList.length > 0)
             {
                 item = this.useItemList.shift();
-                item.RecoverPool();
+                item.Clear();
+                this.RemoveFromItemCache(item);
+                // item.RecoverPool();
             }
+        }
+
+        if(this.camera)
+        {
+            this.camera.worldToViewportPoint(position, item.position);
+            position = item.position;
         }
         item.atlaTypeKey = atlaTypeKey;
         item.position = position;
@@ -112,6 +173,7 @@ export default class WarBitmapText extends Laya.Sprite
 
     RecoverItem(item:WarBitmapTextItem)
     {
+        this.RecoverItemCache(item);
         Laya.Pool.recover(this.itemPoolKey, item);
         this.RemoveUseFromList(item);
     }
@@ -153,6 +215,47 @@ export default class WarBitmapText extends Laya.Sprite
             var item = this.tweenItemList[i];
             item.UpdateTween(delta);
         }
+    }
+
+    camera: Laya.Camera;
+    
+    __parent: Laya.Node;
+    __parentIndex:number;
+    SetParent(parent: Laya.Node, parentIndex?:number)
+    {
+        this.__parent = parent;
+        this.__parentIndex = parentIndex;
+    }
+
+
+    Show()
+    {
+        if(this.__parentIndex != undefined)
+        {
+            this.__parent.addChildAt(this, this.__parentIndex);
+        }
+        else
+        {
+            this.__parent.addChild(this);
+        }
+        this.StartUpdate();
+    }
+
+    Hide()
+    {
+        this.Clear();
+        this.removeSelf();
+        this.StopUpdate();
+    }
+
+    Clear()
+    {
+        while(this.useItemList.length > 0)
+        {
+            var item = this.useItemList.shift();
+            item.RecoverPool();
+        }
+        this.tweenItemList.length = 0;
     }
 
 

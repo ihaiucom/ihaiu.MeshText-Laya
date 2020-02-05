@@ -87,7 +87,7 @@ export default class TestShader2
         txt.text = this.strList[Random.range(0,this.strList.length)];
         // txt.text = "0123456789";
         // txt.text = "闪爆暴0123456789qwertyuiopasdfghjkl;zxcvbnm,./零一二三四五六七八九";
-        if(Random.range(0, 10) > 5)
+        // if(Random.range(0, 10) > 5)
         {
             txt.font = font;
         }

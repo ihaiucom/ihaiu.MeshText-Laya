@@ -11,12 +11,12 @@ import TestShader2 from "./TestShader2";
 
 		if(Laya.Browser.onWeiXin)
 		{
-			Laya.URL.basePath = "http://10.10.10.188:8900/bin/";
+			Laya.URL.basePath = "http://192.168.1.10:8900/bin/";
 		}
 		
 		// 启动游戏
-		// new TestShader();
-		new TestShader2();
+		new TestShader();
+		// new TestShader2();
 		
 		
 

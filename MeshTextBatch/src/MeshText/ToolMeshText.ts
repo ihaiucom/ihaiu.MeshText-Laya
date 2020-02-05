@@ -189,7 +189,7 @@ export default class ToolMeshText
             var spriteData = atlas.GetFrame(s, atlaTypeKey);
             if(spriteData == null)
             {
-                console.warn("文字图集里没找到字符:" + s);
+                console.warn("文字图集里没找到字符:" + s, "type=" + atlaTypeKey);
                 continue;
             }
             var spriteUV = spriteData.frameUV;
