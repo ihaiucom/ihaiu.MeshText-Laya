@@ -67,24 +67,26 @@ export default class WarBitmapTextItem
     private startX:number = 0;
 
     private startY:number = 0;
+    private endY:number = 0;
     public tweenRate = 0;
     public StartTween()
     {
         var textTF = this.textTF;
         this.tweenRate = 0;
         this.tweenValue = 0;
-        // this.bitmapText.AddTweenItem(this);
         
         let ratio = Number(Math.random().toFixed(2));
         this.startX = textTF.x = (textTF.x - 40 + 80 * ratio);
         this.startY = textTF.y = (textTF.y - 80 * ratio);
+        this.endY = this.startY - 80;
 
         textTF.scale(0,0);
         textTF.alpha = 1.0;
+        this.bitmapText.AddTweenItem(this);
 
-        Tween.to(textTF, { scaleX: 1.5, scaleY: 1.5 }, 144, Ease.linearNone, null, 0, false);
-        Tween.to(textTF, { scaleX: 0.8, scaleY: 0.8 }, 144, Ease.linearNone, null, 144, false);
-        Tween.to(textTF, { y: this.startY - 80,alpha: 0.0 }, 400, Ease.linearNone, Laya.Handler.create(this, this.OnTweenEnd), 448, false);
+        // Tween.to(textTF, { scaleX: 1.5, scaleY: 1.5 }, 144, Ease.linearNone, null, 0, false);
+        // Tween.to(textTF, { scaleX: 0.8, scaleY: 0.8 }, 144, Ease.linearNone, null, 144, false);
+        // Tween.to(textTF, { y: this.startY - 80,alpha: 0.0 }, 400, Ease.linearNone, Laya.Handler.create(this, this.OnTweenEnd), 448, false);
     
     }
 
@@ -93,15 +95,29 @@ export default class WarBitmapTextItem
     private tweenValue = 0;
     public UpdateTween(delta: number)
     {
-        this.tweenRate += delta   * this.tweenSpeed;
-        // this.tweenValue = Mathf.Lerp(this.tweenValue, 1.0, this.tweenRate);
-        // this.tweenValue = Mathf.Lerp(0, 1.0, this.tweenRate);
-        this.tweenValue = Mathf.Lerp(this.tweenValue * 0.25, 1.0, this.tweenRate);
+        var t = this.tweenRate += delta   * this.tweenSpeed;
+        // this.tweenValue = Mathf.Lerp(this.tweenValue * 0.25, 1.0, this.tweenRate);
 
-
-        if(this.tweenValue >= 1)
+        if(t < 0.17)
         {
-            this.RecoverPool();
+            var scale = Mathf.Lerp(0, 1.5, t / 0.17);
+            this.textTF.scale(scale, scale);
+        }
+        else if(t < 0.34)
+        {
+            var scale = Mathf.Lerp(1.5, 0.8, (t - 0.17) / 0.17);
+            this.textTF.scale(scale, scale);
+        }
+        else if(t > 0.52)
+        {
+		    t = (t - 0.52) / 0.48;
+            this.textTF.y = Mathf.Lerp(this.startY, this.endY, t);
+            this.textTF.alpha = 1 - t;
+        }
+
+        if(this.tweenRate >= 1)
+        {
+            this.OnTweenEnd();
         }
     }
 
