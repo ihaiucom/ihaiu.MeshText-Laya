@@ -124,6 +124,7 @@ export default class WarBitmapTextItem
     Clear()
     {
         Tween.clearAll(this.textTF);
+        this.bitmapText.RemoveTweenItem(this);
     }
 
     OnTweenEnd()

@@ -1611,6 +1611,7 @@
         }
         Clear() {
             Tween.clearAll(this.textTF);
+            this.bitmapText.RemoveTweenItem(this);
         }
         OnTweenEnd() {
             Tween.clearAll(this.textTF);
@@ -2008,7 +2009,6 @@
 
     var Vector3$3 = Laya.Vector3;
     var Tween$1 = Laya.Tween;
-    var Ease = Laya.Ease;
     class WarTextureTextItem extends Laya.Sprite {
         constructor(bitmapText, index) {
             super();
@@ -2019,6 +2019,7 @@
             this.position = new Vector3$3();
             this.startX = 0;
             this.startY = 0;
+            this.endY = 0;
             this.tweenRate = 0;
             this.tweenSpeed = 1;
             this.speedRandom = Math.random() * 0.5 + 0.7;
@@ -2058,21 +2059,33 @@
             let ratio = Number(Math.random().toFixed(2));
             this.startX = this.x = (this.x - 40 + 80 * ratio);
             this.startY = this.y = (this.y - 80 * ratio);
+            this.endY = this.startY - 80;
             this.scale(0, 0);
             this.alpha = 1.0;
-            Tween$1.to(this, { scaleX: 1.5, scaleY: 1.5 }, 144, Ease.linearNone, null, 0, false);
-            Tween$1.to(this, { scaleX: 0.8, scaleY: 0.8 }, 144, Ease.linearNone, null, 144, false);
-            Tween$1.to(this, { y: this.startY - 80, alpha: 0.0 }, 400, Ease.linearNone, Laya.Handler.create(this, this.OnTweenEnd), 448, false);
+            this.bitmapText.AddTweenItem(this);
         }
         UpdateTween(delta) {
-            this.tweenRate += delta * this.tweenSpeed;
-            this.tweenValue = Mathf.Lerp(this.tweenValue * 0.25, 1.0, this.tweenRate);
-            if (this.tweenValue >= 1) {
-                this.RecoverPool();
+            var t = this.tweenRate += delta * this.tweenSpeed;
+            if (t < 0.17) {
+                var scale = Mathf.Lerp(0, 1.5, t / 0.17);
+                this.scale(scale, scale);
+            }
+            else if (t < 0.34) {
+                var scale = Mathf.Lerp(1.5, 0.8, (t - 0.17) / 0.17);
+                this.scale(scale, scale);
+            }
+            else if (t > 0.52) {
+                t = (t - 0.52) / 0.48;
+                this.y = Mathf.Lerp(this.startY, this.endY, t);
+                this.alpha = 1 - t;
+            }
+            if (this.tweenRate >= 1) {
+                this.OnTweenEnd();
             }
         }
         Clear() {
             Tween$1.clearAll(this);
+            this.bitmapText.RemoveTweenItem(this);
         }
         OnTweenEnd() {
             Tween$1.clearAll(this);
@@ -2454,7 +2467,7 @@
 
     var Vector3$4 = Laya.Vector3;
     var Tween$2 = Laya.Tween;
-    var Ease$1 = Laya.Ease;
+    var Ease = Laya.Ease;
     class WarMaterialTextItem extends Laya.Sprite3D {
         constructor(bitmapText, index) {
             super();
@@ -2499,9 +2512,9 @@
             let ratio = Number(Math.random().toFixed(2));
             this.startY = this.transform.localPositionY;
             this.transform.scale = new Vector3$4(0, 0, 1);
-            Tween$2.to(this.transform, { localScaleX: 1.5, localScaleY: 1.5 }, 144, Ease$1.linearNone, null, 0, false);
-            Tween$2.to(this.transform, { localScaleX: 0.8, localScaleY: 0.8 }, 144, Ease$1.linearNone, null, 144, false);
-            Tween$2.to(this.transform, { localPositionY: this.startY + 1 }, 400, Ease$1.linearNone, Laya.Handler.create(this, this.OnTweenEnd), 448, false);
+            Tween$2.to(this.transform, { localScaleX: 1.5, localScaleY: 1.5 }, 144, Ease.linearNone, null, 0, false);
+            Tween$2.to(this.transform, { localScaleX: 0.8, localScaleY: 0.8 }, 144, Ease.linearNone, null, 144, false);
+            Tween$2.to(this.transform, { localPositionY: this.startY + 1 }, 400, Ease.linearNone, Laya.Handler.create(this, this.OnTweenEnd), 448, false);
         }
         UpdateTween(delta) {
             this.tweenRate += delta * this.tweenSpeed;
