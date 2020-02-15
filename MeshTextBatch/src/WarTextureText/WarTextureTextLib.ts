@@ -41,3 +41,6 @@ export default class WarTextureTextLib
         this.defaultText = text;
     }
 }
+
+window['WarTextureText'] = WarTextureText;
+window['WarTextureTextLib'] = WarTextureTextLib;

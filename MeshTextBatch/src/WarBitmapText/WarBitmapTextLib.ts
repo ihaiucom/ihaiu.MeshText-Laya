@@ -39,4 +39,6 @@ export default class WarBitmapTextLib
     }
 }
 
+
+window['WarBitmapText'] = WarBitmapText;
 window['WarBitmapTextLib'] = WarBitmapTextLib;

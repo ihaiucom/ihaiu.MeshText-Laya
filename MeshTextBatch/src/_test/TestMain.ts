@@ -2,6 +2,7 @@ import TestShader from "./TestShader";
 import GameConfig from "../GameConfig";
 import TestText from "./TestText";
 import { TestScene } from "./TestSene";
+import TestArrayBuffer from "./TestArrayBuffer";
 
  class TestMain 
 {
@@ -18,6 +19,8 @@ import { TestScene } from "./TestSene";
 
 		var text = new TestText();
 		text.InitAsync();
+
+		// new TestArrayBuffer();
 		
 		// 启动游戏
 		// new TestShader();

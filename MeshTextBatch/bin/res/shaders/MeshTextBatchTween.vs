@@ -90,7 +90,10 @@ void main()
 	else
 	{
 		float t = (t - 0.52) / 0.48;
-		position = position + lerpVec4(t2 * position, t3 * position,  t); 
+		// position = position + lerpVec4(t2 * position, t3 * position,  t); 
+		
+	 	position.xyz = position.xyz + lerpVec4(u_TweenPositionBegin, u_TweenPositionEnd, t).xyz;
+
 		v_Alpha = 1.5 - t;
 	}
 	// float fs = float[4](0.17, 0.33, 0.52, 1);

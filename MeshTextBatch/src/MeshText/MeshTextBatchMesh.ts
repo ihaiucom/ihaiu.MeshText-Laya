@@ -68,70 +68,70 @@ export default class MeshTextBatchMesh
     }
 
     
-    textItemCache: Map<any, Map<string, MeshTextItem[]>> = new Map<any, Map<string, MeshTextItem[]>>();
+    // textItemCache: Map<any, Map<string, MeshTextItem[]>> = new Map<any, Map<string, MeshTextItem[]>>();
 
-    GetItemCacheByType(text: string, atlaTypeKey: any):MeshTextItem[]
-    {
-        var typeMap: Map<string, MeshTextItem[]>;
-        if(this.textItemCache.has(atlaTypeKey))
-        {
-            typeMap = this.textItemCache.get(atlaTypeKey);
-        }
-        else
-        {
-            typeMap = new Map<string, MeshTextItem[]>();
-            this.textItemCache.set(atlaTypeKey, typeMap);
-        }
+    // GetItemCacheByType(text: string, atlaTypeKey: any):MeshTextItem[]
+    // {
+    //     var typeMap: Map<string, MeshTextItem[]>;
+    //     if(this.textItemCache.has(atlaTypeKey))
+    //     {
+    //         typeMap = this.textItemCache.get(atlaTypeKey);
+    //     }
+    //     else
+    //     {
+    //         typeMap = new Map<string, MeshTextItem[]>();
+    //         this.textItemCache.set(atlaTypeKey, typeMap);
+    //     }
 
-        if(typeMap.has(text))
-        {
-            return typeMap.get(text);
-        }
-        else
-        {
-            var list = [];
-            typeMap.set(text, list);
-            return list;
-        }
-    }
+    //     if(typeMap.has(text))
+    //     {
+    //         return typeMap.get(text);
+    //     }
+    //     else
+    //     {
+    //         var list = [];
+    //         typeMap.set(text, list);
+    //         return list;
+    //     }
+    // }
 
-    RecoverItemCache(item:MeshTextItem)
-    {
-        var list = this.GetItemCacheByType(item.Text, item.atlaTypeKey);
-        list.push(item);
-    }
+    // RecoverItemCache(item:MeshTextItem)
+    // {
+    //     var list = this.GetItemCacheByType(item.Text, item.atlaTypeKey);
+    //     list.push(item);
+    // }
 
     
-    RemoveFromItemCache(item:MeshTextItem)
-    {
-        if(!item.atlaTypeKey)
-        {
-            return;
-        }
-        var list = this.GetItemCacheByType(item.Text, item.atlaTypeKey);
-        var i = list.indexOf(item);
-        if(i != -1)
-        {
-            list.splice(i, 1);
-        }
-    }
+    // RemoveFromItemCache(item:MeshTextItem)
+    // {
+    //     if(!item.atlaTypeKey)
+    //     {
+    //         return;
+    //     }
+    //     var list = this.GetItemCacheByType(item.Text, item.atlaTypeKey);
+    //     var i = list.indexOf(item);
+    //     if(i != -1)
+    //     {
+    //         list.splice(i, 1);
+    //     }
+    // }
 
-    GetItemCache(text: string, atlaTypeKey: any):MeshTextItem
-    {
-        var list = this.GetItemCacheByType(text, atlaTypeKey);
-        if(list.length > 0)
-        {
-            var item = list.shift();
-            var pool = Laya.Pool.getPoolBySign(this.itemPoolKey);
-            var i = pool.indexOf(item);
-            if(i != -1)
-            {
-                pool.splice(i, 1);
-            }
-            return item;
-        }
-        return null;
-    }
+    // GetItemCache(text: string, atlaTypeKey: any):MeshTextItem
+    // {
+    //     var list = this.GetItemCacheByType(text, atlaTypeKey);
+    //     if(list.length > 0)
+    //     {
+    //         var item = list.shift();
+    //         var pool = Laya.Pool.getPoolBySign(this.itemPoolKey);
+    //         var i = pool.indexOf(item);
+    //         if(i != -1)
+    //         {
+    //             pool.splice(i, 1);
+    //         }
+    //         return item;
+    //     }
+    //     return null;
+    // }
 
     useItemList:MeshTextItem[] = [];
     GetItem(text: string, position = new Laya.Vector3(0, 0, 0), atlaTypeKey?: any, scale: number = 1.0):MeshTextItem
@@ -140,10 +140,10 @@ export default class MeshTextBatchMesh
         // if(item == null)
         // {
             var item = Laya.Pool.getItem(this.itemPoolKey);
-            if(item)
-            {
-                this.RemoveFromItemCache(item);
-            }
+            // if(item)
+            // {
+            //     this.RemoveFromItemCache(item);
+            // }
         // }
 
 
@@ -154,7 +154,7 @@ export default class MeshTextBatchMesh
                 item = this.useItemList.shift();
                 item.Reset();
                 this.RemoveTweenItem(item);
-                this.RemoveFromItemCache(item);
+                // this.RemoveFromItemCache(item);
                 // item.RecoverPool();
             }
         }

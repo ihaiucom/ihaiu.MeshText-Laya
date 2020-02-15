@@ -56,8 +56,9 @@ export default class WarBitmapTextItem
         this._text = value;
         this._text2 = str;
 
-        this.textTF.text = str;
-        window['tf'] = this.textTF;
+        this.textTF.changeText(str);
+        // this.textTF.text = str;
+        // window['tf'] = this.textTF;
 
     }
 

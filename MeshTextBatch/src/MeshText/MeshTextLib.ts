@@ -6,6 +6,8 @@ import { MeshTextType, TextStyleType } from "./MeshTextType";
 import { HorizontalAlignType } from "./HorizontalAlignType";
 import { MeshTextBatchTweenMaterial } from "./Material/MeshTextBatchTweenMaterial";
 import { MeshTextBatchTweenSeparateMaterial } from "./Material/MeshTextBatchTweenSeparateMaterial";
+import WarBitmapTextLib from "../WarBitmapText/WarBitmapTextLib";
+import WarTextureTextLib from "../WarTextureText/WarTextureTextLib";
 
 export default class MeshTextLib
 {
@@ -49,7 +51,7 @@ export default class MeshTextLib
         atlas.GenerateNumType(MeshTextType.Red, TextStyleType.Red);
 
         atlas.typeScaleMap.set(TextStyleType.White, 0.2);
-        atlas.typeScaleMap.set(TextStyleType.Green, 0.2);
+        atlas.typeScaleMap.set(TextStyleType.Red, 0.2);
         atlas.typeScaleMap.set(TextStyleType.Green, 0.2);
 
         atlas.typeScaleMap.set(TextStyleType.WhiteBig, 0.3);
@@ -72,10 +74,13 @@ export default class MeshTextLib
 
 window['MeshTextBatchMesh'] = MeshTextBatchMesh;
 window['MeshTextBatchSprite'] = MeshTextBatchSprite;
-window['ToolMeshText'] = ToolMeshText;
 window['MeshTextAtlas'] = MeshTextAtlas;
 window['MeshTextType'] = MeshTextType;
-window['HorizontalAlignType'] = HorizontalAlignType;
+window['TextStyleType'] = TextStyleType;
 window['MeshTextBatchTweenMaterial'] = MeshTextBatchTweenMaterial;
 window['MeshTextBatchTweenSeparateMaterial'] = MeshTextBatchTweenSeparateMaterial;
 window['MeshTextLib'] = MeshTextLib;
+
+
+window['WarBitmapTextLib'] = WarBitmapTextLib;
+window['WarTextureTextLib'] = WarTextureTextLib;

@@ -135,201 +135,201 @@ export class MeshTextBatchTweenSeparateMaterial extends BaseMaterial
 	private _albedoIntensity: number = 1.0;
 	private _enableVertexColor: boolean = false;
 
-	/**
-	 * @internal
-	 */
-	get _ColorR(): number {
-		return this._albedoColor.x;
-	}
+	// /**
+	//  * @internal
+	//  */
+	// get _ColorR(): number {
+	// 	return this._albedoColor.x;
+	// }
 
-	set _ColorR(value: number) {
-		this._albedoColor.x = value;
-		this.albedoColor = this._albedoColor;
-	}
+	// set _ColorR(value: number) {
+	// 	this._albedoColor.x = value;
+	// 	this.albedoColor = this._albedoColor;
+	// }
 
-	/**
-	 * @internal
-	 */
-	get _ColorG(): number {
-		return this._albedoColor.y;
-	}
+	// /**
+	//  * @internal
+	//  */
+	// get _ColorG(): number {
+	// 	return this._albedoColor.y;
+	// }
 
-	set _ColorG(value: number) {
-		this._albedoColor.y = value;
-		this.albedoColor = this._albedoColor;
-	}
+	// set _ColorG(value: number) {
+	// 	this._albedoColor.y = value;
+	// 	this.albedoColor = this._albedoColor;
+	// }
 
-	/**
-	 * @internal
-	 */
-	get _ColorB(): number {
-		return this._albedoColor.z;
-	}
+	// /**
+	//  * @internal
+	//  */
+	// get _ColorB(): number {
+	// 	return this._albedoColor.z;
+	// }
 
-	set _ColorB(value: number) {
-		this._albedoColor.z = value;
-		this.albedoColor = this._albedoColor;
-	}
+	// set _ColorB(value: number) {
+	// 	this._albedoColor.z = value;
+	// 	this.albedoColor = this._albedoColor;
+	// }
 
-	/**
-	 * @internal 
-	 */
-	get _ColorA(): number {
-		return this._albedoColor.w;
-	}
+	// /**
+	//  * @internal 
+	//  */
+	// get _ColorA(): number {
+	// 	return this._albedoColor.w;
+	// }
 
-	set _ColorA(value: number) {
-		this._albedoColor.w = value;
-		this.albedoColor = this._albedoColor;
-	}
+	// set _ColorA(value: number) {
+	// 	this._albedoColor.w = value;
+	// 	this.albedoColor = this._albedoColor;
+	// }
 
-	/**
-	 * @internal
-	 */
-	get _AlbedoIntensity(): number {
-		return this._albedoIntensity;
-	}
+	// /**
+	//  * @internal
+	//  */
+	// get _AlbedoIntensity(): number {
+	// 	return this._albedoIntensity;
+	// }
 
-	set _AlbedoIntensity(value: number) {
-		if (this._albedoIntensity !== value) {
-			var finalAlbedo: Vector4 = (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.ALBEDOCOLOR));
-			Vector4.scale(this._albedoColor, value, finalAlbedo);
-			this._albedoIntensity = value;
-			this._shaderValues.setVector(MeshTextBatchTweenSeparateMaterial.ALBEDOCOLOR, finalAlbedo);
-		}
-	}
+	// set _AlbedoIntensity(value: number) {
+	// 	if (this._albedoIntensity !== value) {
+	// 		var finalAlbedo: Vector4 = (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.ALBEDOCOLOR));
+	// 		Vector4.scale(this._albedoColor, value, finalAlbedo);
+	// 		this._albedoIntensity = value;
+	// 		this._shaderValues.setVector(MeshTextBatchTweenSeparateMaterial.ALBEDOCOLOR, finalAlbedo);
+	// 	}
+	// }
 
-	/**
-	 * @internal
-	 */
-	get _MainTex_STX(): number {
-		return this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET).x;
-	}
+	// /**
+	//  * @internal
+	//  */
+	// get _MainTex_STX(): number {
+	// 	return this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET).x;
+	// }
 
-	set _MainTex_STX(x: number) {
-		var tilOff: Vector4 = (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET));
-		tilOff.x = x;
-		this.tilingOffset = tilOff;
-	}
+	// set _MainTex_STX(x: number) {
+	// 	var tilOff: Vector4 = (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET));
+	// 	tilOff.x = x;
+	// 	this.tilingOffset = tilOff;
+	// }
 
-	/**
-	 * @internal
-	 */
-	get _MainTex_STY(): number {
-		return this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET).y;
-	}
+	// /**
+	//  * @internal
+	//  */
+	// get _MainTex_STY(): number {
+	// 	return this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET).y;
+	// }
 
-	set _MainTex_STY(y: number) {
-		var tilOff: Vector4 = (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET));
-		tilOff.y = y;
-		this.tilingOffset = tilOff;
-	}
+	// set _MainTex_STY(y: number) {
+	// 	var tilOff: Vector4 = (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET));
+	// 	tilOff.y = y;
+	// 	this.tilingOffset = tilOff;
+	// }
 
-	/**
-	 * @internal
-	 */
-	get _MainTex_STZ(): number {
-		return this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET).z;
-	}
+	// /**
+	//  * @internal
+	//  */
+	// get _MainTex_STZ(): number {
+	// 	return this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET).z;
+	// }
 
-	set _MainTex_STZ(z: number) {
-		var tilOff: Vector4 = (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET));
-		tilOff.z = z;
-		this.tilingOffset = tilOff;
-	}
+	// set _MainTex_STZ(z: number) {
+	// 	var tilOff: Vector4 = (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET));
+	// 	tilOff.z = z;
+	// 	this.tilingOffset = tilOff;
+	// }
 
-	/**
-	 * @internal
-	 */
-	get _MainTex_STW(): number {
-		return this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET).w;
-	}
+	// /**
+	//  * @internal
+	//  */
+	// get _MainTex_STW(): number {
+	// 	return this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET).w;
+	// }
 
-	set _MainTex_STW(w: number) {
-		var tilOff: Vector4 = (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET));
-		tilOff.w = w;
-		this.tilingOffset = tilOff;
-	}
+	// set _MainTex_STW(w: number) {
+	// 	var tilOff: Vector4 = (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET));
+	// 	tilOff.w = w;
+	// 	this.tilingOffset = tilOff;
+	// }
 
-	/**
-	 * @internal
-	 */
-	get _Cutoff(): number {
-		return this.alphaTestValue;
-	}
+	// /**
+	//  * @internal
+	//  */
+	// get _Cutoff(): number {
+	// 	return this.alphaTestValue;
+	// }
 
-	set _Cutoff(value: number) {
-		this.alphaTestValue = value;
-	}
+	// set _Cutoff(value: number) {
+	// 	this.alphaTestValue = value;
+	// }
 
-	/**
-	 * 反照率颜色R分量。
-	 */
-	get albedoColorR(): number {
-		return this._ColorR;
-	}
+	// /**
+	//  * 反照率颜色R分量。
+	//  */
+	// get albedoColorR(): number {
+	// 	return this._ColorR;
+	// }
 
-	set albedoColorR(value: number) {
-		this._ColorR = value;
-	}
+	// set albedoColorR(value: number) {
+	// 	this._ColorR = value;
+	// }
 
-	/**
-	 * 反照率颜色G分量。
-	 */
-	get albedoColorG(): number {
-		return this._ColorG;
-	}
+	// /**
+	//  * 反照率颜色G分量。
+	//  */
+	// get albedoColorG(): number {
+	// 	return this._ColorG;
+	// }
 
-	set albedoColorG(value: number) {
-		this._ColorG = value;
-	}
+	// set albedoColorG(value: number) {
+	// 	this._ColorG = value;
+	// }
 
-	/**
-	 * 反照率颜色B分量。
-	 */
-	get albedoColorB(): number {
-		return this._ColorB;
-	}
+	// /**
+	//  * 反照率颜色B分量。
+	//  */
+	// get albedoColorB(): number {
+	// 	return this._ColorB;
+	// }
 
-	set albedoColorB(value: number) {
-		this._ColorB = value;
-	}
+	// set albedoColorB(value: number) {
+	// 	this._ColorB = value;
+	// }
 
-	/**
-	 * 反照率颜色Z分量。
-	 */
-	get albedoColorA(): number {
-		return this._ColorA;
-	}
+	// /**
+	//  * 反照率颜色Z分量。
+	//  */
+	// get albedoColorA(): number {
+	// 	return this._ColorA;
+	// }
 
-	set albedoColorA(value: number) {
-		this._ColorA = value;
-	}
+	// set albedoColorA(value: number) {
+	// 	this._ColorA = value;
+	// }
 
-	/**
-	 * 反照率颜色。
-	 */
-	get albedoColor(): Vector4 {
-		return this._albedoColor;
-	}
+	// /**
+	//  * 反照率颜色。
+	//  */
+	// get albedoColor(): Vector4 {
+	// 	return this._albedoColor;
+	// }
 
-	set albedoColor(value: Vector4) {
-		var finalAlbedo: Vector4 = (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.ALBEDOCOLOR));
-		Vector4.scale(value, this._albedoIntensity, finalAlbedo);
-		this._albedoColor = value;
-		this._shaderValues.setVector(MeshTextBatchTweenSeparateMaterial.ALBEDOCOLOR, finalAlbedo);
-	}
+	// set albedoColor(value: Vector4) {
+	// 	var finalAlbedo: Vector4 = (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.ALBEDOCOLOR));
+	// 	Vector4.scale(value, this._albedoIntensity, finalAlbedo);
+	// 	this._albedoColor = value;
+	// 	this._shaderValues.setVector(MeshTextBatchTweenSeparateMaterial.ALBEDOCOLOR, finalAlbedo);
+	// }
 
-	/**
-	 * 反照率强度。
-	 */
-	get albedoIntensity(): number {
-		return this._albedoIntensity;
-	}
+	// /**
+	//  * 反照率强度。
+	//  */
+	// get albedoIntensity(): number {
+	// 	return this._albedoIntensity;
+	// }
 
-	set albedoIntensity(value: number) {
-		this._AlbedoIntensity = value;
-	}
+	// set albedoIntensity(value: number) {
+	// 	this._AlbedoIntensity = value;
+	// }
 
 	/**
 	 * 反照率贴图。
@@ -346,83 +346,83 @@ export class MeshTextBatchTweenSeparateMaterial extends BaseMaterial
 		this._shaderValues.setTexture(MeshTextBatchTweenSeparateMaterial.ALBEDOTEXTURE, value);
 	}
 
-	/**
-	 * 纹理平铺和偏移X分量。
-	 */
-	get tilingOffsetX(): number {
-		return this._MainTex_STX;
-	}
+	// /**
+	//  * 纹理平铺和偏移X分量。
+	//  */
+	// get tilingOffsetX(): number {
+	// 	return this._MainTex_STX;
+	// }
 
-	set tilingOffsetX(x: number) {
-		this._MainTex_STX = x;
-	}
+	// set tilingOffsetX(x: number) {
+	// 	this._MainTex_STX = x;
+	// }
 
-	/**
-	 * 纹理平铺和偏移Y分量。
-	 */
-	get tilingOffsetY(): number {
-		return this._MainTex_STY;
-	}
+	// /**
+	//  * 纹理平铺和偏移Y分量。
+	//  */
+	// get tilingOffsetY(): number {
+	// 	return this._MainTex_STY;
+	// }
 
-	set tilingOffsetY(y: number) {
-		this._MainTex_STY = y;
-	}
+	// set tilingOffsetY(y: number) {
+	// 	this._MainTex_STY = y;
+	// }
 
-	/**
-	 * 纹理平铺和偏移Z分量。
-	 */
-	get tilingOffsetZ(): number {
-		return this._MainTex_STZ;
-	}
+	// /**
+	//  * 纹理平铺和偏移Z分量。
+	//  */
+	// get tilingOffsetZ(): number {
+	// 	return this._MainTex_STZ;
+	// }
 
-	set tilingOffsetZ(z: number) {
-		this._MainTex_STZ = z;
-	}
+	// set tilingOffsetZ(z: number) {
+	// 	this._MainTex_STZ = z;
+	// }
 
-	/**
-	 * 纹理平铺和偏移W分量。
-	 */
-	get tilingOffsetW(): number {
-		return this._MainTex_STW;
-	}
+	// /**
+	//  * 纹理平铺和偏移W分量。
+	//  */
+	// get tilingOffsetW(): number {
+	// 	return this._MainTex_STW;
+	// }
 
-	set tilingOffsetW(w: number) {
-		this._MainTex_STW = w;
-	}
+	// set tilingOffsetW(w: number) {
+	// 	this._MainTex_STW = w;
+	// }
 
-	/**
-	 * 纹理平铺和偏移。
-	 */
-	get tilingOffset(): Vector4 {
-		return (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET));
-	}
+	// /**
+	//  * 纹理平铺和偏移。
+	//  */
+	// get tilingOffset(): Vector4 {
+	// 	return (<Vector4>this._shaderValues.getVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET));
+	// }
 
-	set tilingOffset(value: Vector4) {
-		if (value) {
-			if (value.x != 1 || value.y != 1 || value.z != 0 || value.w != 0)
-				this._shaderValues.addDefine(MeshTextBatchTweenSeparateMaterial.SHADERDEFINE_TILINGOFFSET);
-			else
-				this._shaderValues.removeDefine(MeshTextBatchTweenSeparateMaterial.SHADERDEFINE_TILINGOFFSET);
-		} else {
-			this._shaderValues.removeDefine(MeshTextBatchTweenSeparateMaterial.SHADERDEFINE_TILINGOFFSET);
-		}
-		this._shaderValues.setVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET, value);
-	}
+	// set tilingOffset(value: Vector4) {
+	// 	if (value) {
+	// 		if (value.x != 1 || value.y != 1 || value.z != 0 || value.w != 0)
+	// 			this._shaderValues.addDefine(MeshTextBatchTweenSeparateMaterial.SHADERDEFINE_TILINGOFFSET);
+	// 		else
+	// 			this._shaderValues.removeDefine(MeshTextBatchTweenSeparateMaterial.SHADERDEFINE_TILINGOFFSET);
+	// 	} else {
+	// 		this._shaderValues.removeDefine(MeshTextBatchTweenSeparateMaterial.SHADERDEFINE_TILINGOFFSET);
+	// 	}
+	// 	this._shaderValues.setVector(MeshTextBatchTweenSeparateMaterial.TILINGOFFSET, value);
+	// }
 
-	/**
-	 * 是否支持顶点色。
-	 */
-	get enableVertexColor(): boolean {
-		return this._enableVertexColor;
-	}
+	// /**
+	//  * 是否支持顶点色。
+	//  */
+	// get enableVertexColor(): boolean {
+	// 	return this._enableVertexColor;
+	// }
 
-	set enableVertexColor(value: boolean) {
-		this._enableVertexColor = value;
-		if (value)
-			this._shaderValues.addDefine(MeshTextBatchTweenSeparateMaterial.SHADERDEFINE_ENABLEVERTEXCOLOR);
-		else
-			this._shaderValues.removeDefine(MeshTextBatchTweenSeparateMaterial.SHADERDEFINE_ENABLEVERTEXCOLOR);
-	}
+	// set enableVertexColor(value: boolean) {
+	// 	this._enableVertexColor = value;
+	// 	if (value)
+	// 		this._shaderValues.addDefine(MeshTextBatchTweenSeparateMaterial.SHADERDEFINE_ENABLEVERTEXCOLOR);
+	// 	else
+	// 		this._shaderValues.removeDefine(MeshTextBatchTweenSeparateMaterial.SHADERDEFINE_ENABLEVERTEXCOLOR);
+	// }
 
 	/**
 	 * 渲染模式。
