@@ -139,6 +139,11 @@ export default class WarBitmapText extends Laya.Sprite
             }
         }
 
+        if(!item)
+        {
+            return null;
+        }
+
         if(this.camera)
         {
             this.camera.worldToViewportPoint(position, item.position);
@@ -156,6 +161,10 @@ export default class WarBitmapText extends Laya.Sprite
     PlayItem(text: string, position = new Laya.Vector3(0, 0, 0), atlaTypeKey?: any, scale: number = 1.0, tweenSpeed:number = 1.0):WarBitmapTextItem
     {
         var item:WarBitmapTextItem = this.GetItem(text, position, atlaTypeKey, scale);
+        if(!item)
+        {
+            return null;
+        }
         item.tweenSpeed = tweenSpeed;
         this.addChild(item.textTF);
         item.StartTween();

@@ -1177,6 +1177,9 @@ var laya = (function () {
                     this.RemoveFromItemCache(item);
                 }
             }
+            if (!item) {
+                return null;
+            }
             if (this.camera) {
                 this.camera.worldToViewportPoint(position, item.position);
                 position = item.position;
@@ -1191,6 +1194,9 @@ var laya = (function () {
         }
         PlayItem(text, position = new Laya.Vector3(0, 0, 0), atlaTypeKey, scale = 1.0, tweenSpeed = 1.0) {
             var item = this.GetItem(text, position, atlaTypeKey, scale);
+            if (!item) {
+                return null;
+            }
             item.tweenSpeed = tweenSpeed;
             this.addChild(item.textTF);
             item.StartTween();
