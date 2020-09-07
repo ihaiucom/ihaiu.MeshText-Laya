@@ -1,8 +1,7 @@
 import TestShader from "./TestShader";
 import GameConfig from "../GameConfig";
-import TestText from "./TestText";
 import { TestScene } from "./TestSene";
-import TestArrayBuffer from "./TestArrayBuffer";
+import { TestText } from "./TestText";
 
  class TestMain 
 {
@@ -18,7 +17,6 @@ import TestArrayBuffer from "./TestArrayBuffer";
 		
 
 		var text = new TestText();
-		text.InitAsync();
 
 		// new TestArrayBuffer();
 		

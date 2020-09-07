@@ -42124,7 +42124,7 @@ declare module laya.utils {
 		/**
 		 * @private 
 		 */
-		private static POOLSIGN:any;
+		static POOLSIGN:any;
 
 		/**
 		 * @private 对象存放池。

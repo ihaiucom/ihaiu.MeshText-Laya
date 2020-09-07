@@ -6,7 +6,7 @@ import { TextStyleType } from "./TextStyleType";
 import WarBitmapTextItem from "./WarBitmapTextItem";
 export default class WarBitmapText extends Laya.Sprite
 {
-   
+    enable: boolean = true;
     debugItemLoop: boolean = false;
 
     private static UID = 0;
@@ -107,6 +107,7 @@ export default class WarBitmapText extends Laya.Sprite
             var i = pool.indexOf(item);
             if(i != -1)
             {
+                item[Laya.Pool.POOLSIGN] = false;
                 pool.splice(i, 1);
             }
             return item;
@@ -160,6 +161,7 @@ export default class WarBitmapText extends Laya.Sprite
 
     PlayItem(text: string, position = new Laya.Vector3(0, 0, 0), atlaTypeKey?: any, scale: number = 1.0, tweenSpeed:number = 1.0):WarBitmapTextItem
     {
+        if(!this.enable) return ;
         var item:WarBitmapTextItem = this.GetItem(text, position, atlaTypeKey, scale);
         if(!item)
         {
