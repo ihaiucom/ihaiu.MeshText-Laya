@@ -5,6 +5,7 @@ import Tween = Laya.Tween;
 import Ease = Laya.Ease;
 export default class WarBitmapTextItem
 {
+
     bitmapText: WarBitmapText;
     textTF:Laya.Text;
     public index:number = 0;
@@ -20,8 +21,9 @@ export default class WarBitmapTextItem
         var tf = new Laya.Text();
         tf.font = bitmapText.fontName;
         tf.align = "center";
+        // tf.valign = "middle";
         tf.width = 250;
-        tf.height = 50;
+        tf.height = 38;
         tf.pivotX = 0.5 * tf.width;
         tf.pivotY = 0.5 * tf.height;
         this.textTF = tf;
@@ -64,57 +66,76 @@ export default class WarBitmapTextItem
 
     public position: Vector3 = new Vector3();
 
+    public unitId: number = -1;
+    public offsetY: number = 0;
+    public offsetYEnd: number = 0;
     
     private startX:number = 0;
-
     private startY:number = 0;
-    private endY:number = 0;
     public tweenRate = 0;
+    
     public StartTween()
     {
         var textTF = this.textTF;
         this.tweenRate = 0;
         this.tweenValue = 0;
         
-        let ratio = Number(Math.random().toFixed(2));
-        this.startX = textTF.x = (textTF.x - 40 + 80 * ratio);
-        this.startY = textTF.y = (textTF.y - 80 * ratio);
-        this.endY = this.startY - 80;
 
-        textTF.scale(0,0);
+        this.offsetY = 0;
+        this.offsetYEnd = 0;
+        this.startX = textTF.x;
+        this.startY = textTF.y;
+
+        textTF.scale(0.85,0.85);
         textTF.alpha = 1.0;
         this.bitmapText.AddTweenItem(this);
-
-        // Tween.to(textTF, { scaleX: 1.5, scaleY: 1.5 }, 144, Ease.linearNone, null, 0, false);
-        // Tween.to(textTF, { scaleX: 0.8, scaleY: 0.8 }, 144, Ease.linearNone, null, 144, false);
-        // Tween.to(textTF, { y: this.startY - 80,alpha: 0.0 }, 400, Ease.linearNone, Laya.Handler.create(this, this.OnTweenEnd), 448, false);
-    
     }
 
     public tweenSpeed: number = 1;
     private speedRandom = Math.random() * 0.5 + 0.7;
     private tweenValue = 0;
+    
     public UpdateTween(delta: number)
     {
-        var t = this.tweenRate += delta   * this.tweenSpeed;
-        // this.tweenValue = Mathf.Lerp(this.tweenValue * 0.25, 1.0, this.tweenRate);
+        // var frameKeys = [0, 0.01, 0.04, 0.09, 0.20];
+        // var frameKeys = [0, 0.05, 0.2, 0.45, 1.0];
+        delta *= this.tweenSpeed;
+        var t = this.tweenRate += delta;
+        if(this.offsetYEnd < this.offsetY)
+        {
+            this.offsetY = Mathf.Lerp(this.offsetY, this.offsetYEnd, 0.5);
+            // this.offsetY =this.offsetYEnd;
+        }
 
-        if(t < 0.17)
+        if(t < 0.05)
         {
-            var scale = Mathf.Lerp(0, 1.5, t / 0.17);
+            var scale = Mathf.Lerp(0.85, 1.3, t / 0.05);
             this.textTF.scale(scale, scale);
         }
-        else if(t < 0.34)
+        else if(t < 0.2)
         {
-            var scale = Mathf.Lerp(1.5, 0.8, (t - 0.17) / 0.17);
+            var r = (t - 0.05) / 0.15;
+            var scale = Mathf.Lerp(1.3, 1, r);
             this.textTF.scale(scale, scale);
         }
-        else if(t > 0.52)
+
+        if(t < 0.05)
         {
-		    t = (t - 0.52) / 0.48;
-            this.textTF.y = Mathf.Lerp(this.startY, this.endY, t);
-            this.textTF.alpha = 1 - t;
+            this.textTF.y = this.offsetY + this.startY;
         }
+        else if(t < 0.45)
+        {
+            var r = (t - 0.05) / 0.4;
+            this.textTF.y = this.offsetY + this.startY + Mathf.Lerp(0, -10, r);
+        }
+        else
+        {
+            var r = (t - 0.45) / 0.55;
+            this.textTF.y = this.offsetY + this.startY - 10 + Mathf.Lerp(0, -30, r);
+            this.textTF.alpha = 1 - r;
+        }
+
+
 
         if(this.tweenRate >= 1)
         {
@@ -122,15 +143,14 @@ export default class WarBitmapTextItem
         }
     }
 
+
     Clear()
     {
-        Tween.clearAll(this.textTF);
         this.bitmapText.RemoveTweenItem(this);
     }
 
     OnTweenEnd()
     {
-        Tween.clearAll(this.textTF);
         if(this.bitmapText.debugItemLoop)
         {
             this.textTF.pos(this.position.x, this.position.y);

@@ -159,7 +159,7 @@ export default class WarBitmapText extends Laya.Sprite
         return item;
     } 
 
-    PlayItem(text: string, position = new Laya.Vector3(0, 0, 0), atlaTypeKey?: any, scale: number = 1.0, tweenSpeed:number = 1.0):WarBitmapTextItem
+    PlayItem(unitId: number, text: string, position = new Laya.Vector3(0, 0, 0), atlaTypeKey?: any, scale: number = 1.0, tweenSpeed:number = 1):WarBitmapTextItem
     {
         if(!this.enable) return ;
         var item:WarBitmapTextItem = this.GetItem(text, position, atlaTypeKey, scale);
@@ -167,8 +167,14 @@ export default class WarBitmapText extends Laya.Sprite
         {
             return null;
         }
+
+        // if(item.unitId != -1)
+        // {
+        //     console.error("item.unitId", item.unitId);
+        // }
+        item.unitId = unitId;
         item.tweenSpeed = tweenSpeed;
-        this.addChild(item.textTF);
+        this.addChildAt(item.textTF, 0);
         item.StartTween();
         return item;
     }
@@ -189,24 +195,55 @@ export default class WarBitmapText extends Laya.Sprite
         this.RemoveUseFromList(item);
     }
 
+    unitItemMap: Map<number, WarBitmapTextItem[]> = new Map<number, WarBitmapTextItem[]>();
     tweenItemList: WarBitmapTextItem[] = [];
 
     AddTweenItem(item:WarBitmapTextItem)
     {
+        var unitItemList:WarBitmapTextItem[];
+        if(this.unitItemMap.has(item.unitId))
+        {
+            unitItemList = this.unitItemMap.get(item.unitId);
+        }
+        else
+        {
+            unitItemList = [];
+            this.unitItemMap.set(item.unitId, unitItemList);
+        }
+        unitItemList.unshift(item);
+
         var index = this.tweenItemList.indexOf(item);
         if(index == -1)
         {
             this.tweenItemList.push(item);
         }
+
+        for(var i = 1, len = unitItemList.length; i < len; i ++)
+        {
+            var textItem = unitItemList[i];
+            textItem.offsetYEnd = Math.min( Math.min(i, 5) * -30, textItem.offsetYEnd);
+        }
     }
 
     RemoveTweenItem(item:WarBitmapTextItem)
     {
+        if(this.unitItemMap.has(item.unitId))
+        {
+            var unitItemList = this.unitItemMap.get(item.unitId);
+            var index = unitItemList.indexOf(item);
+            if(index != -1)
+            {
+                unitItemList.splice(index, 1);
+            }
+        }
+
         var index = this.tweenItemList.indexOf(item);
         if(index != -1)
         {
             this.tweenItemList.splice(index, 1);
         }
+
+        item.unitId = -1;
     }
     StartUpdate()
     {

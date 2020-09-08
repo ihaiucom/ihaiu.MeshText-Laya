@@ -57,20 +57,24 @@ export class TestText
         Laya.timer.frameLoop(10, this, this.playText);
     }
 
+
+    private unitPosList = new Map<number, Laya.Vector3>();;
     async playText()
     {
         var hurts = [];
-        for(var i = 0; i < 20; i ++)
+        for(let i = 0; i < 2; i ++)
         {
 
             var hurt = new HurtInfo();
-            // hurt.hurtType = Random.range(0, 3);
-            hurt.hurtType = HurtType.HurtType_Crit;
-            hurt.hurtBlood = Random.range(5, 500);
+            hurt.hurtPos = i;
+            hurt.hurtType = Random.range(0, 3);
+            // hurt.hurtType = HurtType.HurtType_Nomal;
+            // hurt.hurtBlood = Random.range(5, 500);
+            hurt.hurtBlood = Laya.timer.currFrame;
             hurts.push(hurt);
             this.updateBattleHurts(hurts);
 
-            await this.waitTime();
+            // await this.waitTime();
         }
     }
 
@@ -95,6 +99,7 @@ export class TestText
     private updateBattleHurts(hurts: HurtInfo[]) {
         for(var hurt of hurts)
         {
+            var unitId = hurt.hurtPos;
             // var view = War.view.GetViewPlayerByPos(hurt.playerPos);
             // if(view && view.transform)
             {
@@ -106,7 +111,8 @@ export class TestText
                     // 普通伤害
                     case HurtType.HurtType_Nomal:
                         damageStr = damage.toString();
-                        systemType = Random.range(0, 10) > 5 ? TextStyleType.Red : TextStyleType.White;
+                        systemType = TextStyleType.White;
+                        // systemType = Random.range(0, 10) > 5 ? TextStyleType.Red : TextStyleType.White;
                         break;
                     // 回血
                     case HurtType.HurtType_RecoveHp:
@@ -134,16 +140,25 @@ export class TestText
                         return;
                 }
 
-                var position = new Laya.Vector3(Random.range(-3, 3), 0, Random.range(0, 5));
-                // position.x = 0;
-                // position.z = 0;
+                var position: Laya.Vector3;
+                if(this.unitPosList.has(unitId))
+                {
+                    position = this.unitPosList.get(unitId);
+                }
+                else
+                {
+                    position = new Laya.Vector3(Random.range(-3, 3), 0, Random.range(0, 5));
+                    position.x = 0;
+                    position.z = 0;
+                    this.unitPosList.set(unitId, position);
+                }
+
                 var vec3 = this._tmpVec3;
                 vec3.x = position.x;
                 vec3.y = position.y + 1.5;
                 vec3.z = position.z;
-                
                 var text:any = WarBitmapTextLib.defaultText;
-                text.PlayItem(damageStr, vec3, systemType);
+                text.PlayItem(unitId, damageStr, vec3, systemType);
             }
         }
     }

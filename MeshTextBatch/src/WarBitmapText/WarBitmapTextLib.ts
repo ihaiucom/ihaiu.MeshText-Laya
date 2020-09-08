@@ -19,10 +19,11 @@ export default class WarBitmapTextLib
         var text = this.defaultText = new WarBitmapText();
         var style = this.defaultAtlas = new TextStyleMap();
         this.defaultText.textStyleMap = style;
-        style.GenerateNumType("012345679", TextStyleType.White);
-        style.GenerateNumType("qwertyuiop", TextStyleType.Red);
-        style.GenerateNumType("asdfghjkl;", TextStyleType.Yellow);
-        style.GenerateNumType("zxcvbnm,./", TextStyleType.Green);
+        style.GenerateNumType("0123456789", TextStyleType.Yellow);
+        style.GenerateNumType("qwertyuiop", TextStyleType.Skill);
+        style.GenerateNumType("asdfghjkl;", TextStyleType.White);
+        style.GenerateNumType("zxcvbnm,./", TextStyleType.Red);
+        style.GenerateNumType("!@#$%^&*()", TextStyleType.Green);
         // style.GenerateNumType("零一二三四五六七八九", TextStyleType.WhiteBig);
         // style.AddToAllType("d", "闪");
         // style.AddToAllType("c", "暴");

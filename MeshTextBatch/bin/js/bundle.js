@@ -72,9 +72,11 @@ var laya = (function () {
             this._text = "";
             this._text2 = "";
             this.position = new Vector3();
+            this.unitId = -1;
+            this.offsetY = 0;
+            this.offsetYEnd = 0;
             this.startX = 0;
             this.startY = 0;
-            this.endY = 0;
             this.tweenRate = 0;
             this.tweenSpeed = 1;
             this.speedRandom = Math.random() * 0.5 + 0.7;
@@ -85,7 +87,7 @@ var laya = (function () {
             tf.font = bitmapText.fontName;
             tf.align = "center";
             tf.width = 250;
-            tf.height = 50;
+            tf.height = 38;
             tf.pivotX = 0.5 * tf.width;
             tf.pivotY = 0.5 * tf.height;
             this.textTF = tf;
@@ -115,39 +117,49 @@ var laya = (function () {
             var textTF = this.textTF;
             this.tweenRate = 0;
             this.tweenValue = 0;
-            let ratio = Number(Math.random().toFixed(2));
-            this.startX = textTF.x = (textTF.x - 40 + 80 * ratio);
-            this.startY = textTF.y = (textTF.y - 80 * ratio);
-            this.endY = this.startY - 80;
-            textTF.scale(0, 0);
+            this.offsetY = 0;
+            this.offsetYEnd = 0;
+            this.startX = textTF.x;
+            this.startY = textTF.y;
+            textTF.scale(0.85, 0.85);
             textTF.alpha = 1.0;
             this.bitmapText.AddTweenItem(this);
         }
         UpdateTween(delta) {
-            var t = this.tweenRate += delta * this.tweenSpeed;
-            if (t < 0.17) {
-                var scale = Mathf.Lerp(0, 1.5, t / 0.17);
+            delta *= this.tweenSpeed;
+            var t = this.tweenRate += delta;
+            if (this.offsetYEnd < this.offsetY) {
+                this.offsetY = Mathf.Lerp(this.offsetY, this.offsetYEnd, 0.5);
+            }
+            if (t < 0.05) {
+                var scale = Mathf.Lerp(0.85, 1.3, t / 0.05);
                 this.textTF.scale(scale, scale);
             }
-            else if (t < 0.34) {
-                var scale = Mathf.Lerp(1.5, 0.8, (t - 0.17) / 0.17);
+            else if (t < 0.2) {
+                var r = (t - 0.05) / 0.15;
+                var scale = Mathf.Lerp(1.3, 1, r);
                 this.textTF.scale(scale, scale);
             }
-            else if (t > 0.52) {
-                t = (t - 0.52) / 0.48;
-                this.textTF.y = Mathf.Lerp(this.startY, this.endY, t);
-                this.textTF.alpha = 1 - t;
+            if (t < 0.05) {
+                this.textTF.y = this.offsetY + this.startY;
+            }
+            else if (t < 0.45) {
+                var r = (t - 0.05) / 0.4;
+                this.textTF.y = this.offsetY + this.startY + Mathf.Lerp(0, -10, r);
+            }
+            else {
+                var r = (t - 0.45) / 0.55;
+                this.textTF.y = this.offsetY + this.startY - 10 + Mathf.Lerp(0, -30, r);
+                this.textTF.alpha = 1 - r;
             }
             if (this.tweenRate >= 1) {
                 this.OnTweenEnd();
             }
         }
         Clear() {
-            Tween.clearAll(this.textTF);
             this.bitmapText.RemoveTweenItem(this);
         }
         OnTweenEnd() {
-            Tween.clearAll(this.textTF);
             if (this.bitmapText.debugItemLoop) {
                 this.textTF.pos(this.position.x, this.position.y);
                 this.StartTween();
@@ -175,6 +187,7 @@ var laya = (function () {
             this.fontName = "WarFont";
             this.textItemCache = new Map();
             this.useItemList = [];
+            this.unitItemMap = new Map();
             this.tweenItemList = [];
             this.uid = WarBitmapText.UID++;
             this.itemPoolKey = "WarBitmapTextItem__" + this.uid;
@@ -272,15 +285,16 @@ var laya = (function () {
             this.useItemList.push(item);
             return item;
         }
-        PlayItem(text, position = new Laya.Vector3(0, 0, 0), atlaTypeKey, scale = 1.0, tweenSpeed = 1.0) {
+        PlayItem(unitId, text, position = new Laya.Vector3(0, 0, 0), atlaTypeKey, scale = 1.0, tweenSpeed = 1) {
             if (!this.enable)
                 return;
             var item = this.GetItem(text, position, atlaTypeKey, scale);
             if (!item) {
                 return null;
             }
+            item.unitId = unitId;
             item.tweenSpeed = tweenSpeed;
-            this.addChild(item.textTF);
+            this.addChildAt(item.textTF, 0);
             item.StartTween();
             return item;
         }
@@ -296,16 +310,37 @@ var laya = (function () {
             this.RemoveUseFromList(item);
         }
         AddTweenItem(item) {
+            var unitItemList;
+            if (this.unitItemMap.has(item.unitId)) {
+                unitItemList = this.unitItemMap.get(item.unitId);
+            }
+            else {
+                unitItemList = [];
+                this.unitItemMap.set(item.unitId, unitItemList);
+            }
+            unitItemList.unshift(item);
             var index = this.tweenItemList.indexOf(item);
             if (index == -1) {
                 this.tweenItemList.push(item);
             }
+            for (var i = 1, len = unitItemList.length; i < len; i++) {
+                var textItem = unitItemList[i];
+                textItem.offsetYEnd = Math.min(Math.min(i, 5) * -30, textItem.offsetYEnd);
+            }
         }
         RemoveTweenItem(item) {
+            if (this.unitItemMap.has(item.unitId)) {
+                var unitItemList = this.unitItemMap.get(item.unitId);
+                var index = unitItemList.indexOf(item);
+                if (index != -1) {
+                    unitItemList.splice(index, 1);
+                }
+            }
             var index = this.tweenItemList.indexOf(item);
             if (index != -1) {
                 this.tweenItemList.splice(index, 1);
             }
+            item.unitId = -1;
         }
         StartUpdate() {
             Laya.timer.frameLoop(1, this, this.OnLoop);
@@ -350,10 +385,11 @@ var laya = (function () {
 
     var TextStyleType;
     (function (TextStyleType) {
-        TextStyleType[TextStyleType["White"] = 0] = "White";
-        TextStyleType[TextStyleType["Red"] = 1] = "Red";
-        TextStyleType[TextStyleType["Yellow"] = 2] = "Yellow";
-        TextStyleType[TextStyleType["Green"] = 3] = "Green";
+        TextStyleType[TextStyleType["Yellow"] = 0] = "Yellow";
+        TextStyleType[TextStyleType["Skill"] = 1] = "Skill";
+        TextStyleType[TextStyleType["White"] = 2] = "White";
+        TextStyleType[TextStyleType["Red"] = 3] = "Red";
+        TextStyleType[TextStyleType["Green"] = 4] = "Green";
     })(TextStyleType || (TextStyleType = {}));
 
     class WarBitmapTextLib {
@@ -364,10 +400,11 @@ var laya = (function () {
             var text = this.defaultText = new WarBitmapText();
             var style = this.defaultAtlas = new TextStyleMap();
             this.defaultText.textStyleMap = style;
-            style.GenerateNumType("012345679", TextStyleType.White);
-            style.GenerateNumType("qwertyuiop", TextStyleType.Red);
-            style.GenerateNumType("asdfghjkl;", TextStyleType.Yellow);
-            style.GenerateNumType("zxcvbnm,./", TextStyleType.Green);
+            style.GenerateNumType("0123456789", TextStyleType.Yellow);
+            style.GenerateNumType("qwertyuiop", TextStyleType.Skill);
+            style.GenerateNumType("asdfghjkl;", TextStyleType.White);
+            style.GenerateNumType("zxcvbnm,./", TextStyleType.Red);
+            style.GenerateNumType("!@#$%^&*()", TextStyleType.Green);
             return new Promise((resolve) => {
                 text.LoadFont("res/font/damage-export.fnt", () => {
                     text.InitItemPool();
