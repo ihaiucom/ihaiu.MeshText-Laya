@@ -10,6 +10,7 @@ export default class WarBitmapTextItem
     textTF:Laya.Text;
     public index:number = 0;
     public atlaTypeKey: any;
+    private atlaTypeKey2: any;
     public scale: number = 1;
     private _text: string = "";
     private _text2: string = "";
@@ -39,8 +40,13 @@ export default class WarBitmapTextItem
         
         if(this._text == value)
         {
-            return;
+            if(this.atlaTypeKey2 == this.atlaTypeKey)
+            {
+                return;
+            }
         }
+
+
 
         if(value === undefined || value === null)
         {
@@ -57,6 +63,8 @@ export default class WarBitmapTextItem
         }
         this._text = value;
         this._text2 = str;
+        this.atlaTypeKey2 = this.atlaTypeKey;
+
 
         this.textTF.changeText(str);
         // this.textTF.text = str;

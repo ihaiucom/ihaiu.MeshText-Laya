@@ -172,6 +172,7 @@ export default class WarBitmapText extends Laya.Sprite
         // {
         //     console.error("item.unitId", item.unitId);
         // }
+        // console.log("PlayItem,unitId="+unitId+",atlaTypeKey="+atlaTypeKey+",item.atlaTypeKey="+item.atlaTypeKey+",text1="+item.Text+"_text2="+item._text2);
         item.unitId = unitId;
         item.tweenSpeed = tweenSpeed;
         this.addChildAt(item.textTF, 0);
@@ -191,7 +192,7 @@ export default class WarBitmapText extends Laya.Sprite
     RecoverItem(item:WarBitmapTextItem)
     {
         this.RecoverItemCache(item);
-        Laya.Pool.recover(this.itemPoolKey, item);
+        // Laya.Pool.recover(this.itemPoolKey, item);
         this.RemoveUseFromList(item);
     }
 
